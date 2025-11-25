@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>04 — Routage & Hooks avancés — App Animaux</title>
+<style>
+  body{font-family:system-ui, sans-serif;background:#f5f5f5;padding:2rem;line-height:1.6;color:#222;}
+  .section{background:#fff;padding:1.4rem;border-radius:10px;margin-bottom:1.6rem;border:1px solid #ddd;}
+  pre{background:#2b2b2b;color:#f8f8f2;padding:1rem;border-radius:6px;overflow-x:auto;}
+  .comment{color:#00cc44;font-style:italic;}
+  .exo{background:#ecf7ff;padding:1rem;border-left:4px solid #0077cc;border-radius:6px;}
+</style>
+</head>
+<body>
+
+        <nav class="navbar">
+        <div class="nav-brand">Buddy.fr</div>
+
+        <ul class="nav-links">
+            <li><a href="./index.html">Accueil</a></li>
+            <li><a href="./02-structure-premier-composant.html">composant</a></li>
+            <li><a href="./03-props-liste-dynamique.html">props</a></li>
+            <li><a href="/04-routage-hooks-avance.html">routage</a></li>
+        </ul>
+    </nav>
+
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.4rem;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .nav-brand {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+<h1>04 — Routage & Hooks avancés</h1>
+
+<div class="section">
+  <h2>Objectif (fil rouge)</h2>
+  <p>Ajouter navigation (React Router), gérer l'état local et charger les données avec <code>useEffect</code>. Implémenter une page détail d'animal et protéger une route simple.</p>
+
+  <h2>Installation React Router</h2>
+  <pre><code>npm install react-router-dom
+</code></pre>
+
+  <h2>Exemple d'arborescence mise à jour</h2>
+  <pre><code>src/
+├─ main.jsx
+├─ App.jsx
+├─ data/animaux.json
+├─ components/
+│  ├─ AnimalCard.jsx
+│  └─ ProtectedRoute.jsx
+└─ pages/
+   ├─ Home.jsx
+   ├─ Liste.jsx
+   └─ Detail.jsx
+</code></pre>
+
+  <h2>App.jsx avec Router (extrait)</h2>
+  <pre><code><span class="comment">// src/App.jsx</span>
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import Liste from './pages/Liste';
+import Detail from './pages/Detail';
+
+export default function App() {
+  return (
+    &lt;Router&gt;
+      &lt;nav&gt;
+        &lt;Link to="/"&gt;Home&lt;/Link&gt; | &lt;Link to="/liste"&gt;Liste&lt;/Link&gt;
+      &lt;/nav&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element=&lt;Home /&gt; /&gt;
+        &lt;Route path="/liste" element=&lt;Liste /&gt; /&gt;
+        &lt;Route path="/detail/:id" element=&lt;Detail /&gt; /&gt;
+      &lt;/Routes&gt;
+    &lt;/Router&gt;
+  );
+}
+</code></pre>
+
+  <h2>Page Liste — utilise useState, useEffect, useNavigate</h2>
+  <pre><code><span class="comment">// src/pages/Liste.jsx</span>
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AnimalCard from '../components/AnimalCard';
+
+export default function Liste() {
+  const [animaux, setAnimaux] = useState([]);
+  const [q, setQ] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() =&gt; {
+    fetch('/src/data/animaux.json')
+      .then(r =&gt; r.json())
+      .then(setAnimaux);
+  }, []);
+
+  const filtres = animaux.filter(a =&gt; a.nom.toLowerCase().includes(q.toLowerCase()));
+
+  return (
+    &lt;section&gt;
+      &lt;h2&gt;Liste des animaux&lt;/h2&gt;
+      &lt;input placeholder="Rechercher..." value={q} onChange={e =&gt; setQ(e.target.value)} /&gt;
+      &lt;div&gt;
+        {filtres.map(a =&gt; (
+          &lt;div key={a.id}&gt;
+            &lt;AnimalCard {...a} onShowAge={() =&gt; alert(`${a.nom} a ${a.age} ans`)} /&gt;
+            &lt;button onClick={() =&gt; navigate(`/detail/${a.id}`)}&gt;Voir&lt;/button&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+</code></pre>
+
+  <h2>Page Détail — récupération du paramètre route</h2>
+  <pre><code><span class="comment">// src/pages/Detail.jsx</span>
+import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+export default function Detail() {
+  const { id } = useParams();
+  const [animal, setAnimal] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() =&gt; {
+    fetch('/src/data/animaux.json')
+      .then(r =&gt; r.json())
+      .then(list =&gt; setAnimal(list.find(x =&gt; String(x.id) === id)));
+  }, [id]);
+
+  if (!animal) return &lt;div&gt;Chargement...&lt;/div&gt;;
+
+  return (
+    &lt;article&gt;
+      &lt;h2&gt;Détail : {animal.nom}&lt;/h2&gt;
+      &lt;p&gt;Âge : {animal.age} ans&lt;/p&gt;
+      &lt;button onClick={() =&gt; navigate(-1)}&gt;Retour&lt;/button&gt;
+    &lt;/article&gt;
+  );
+}
+</code></pre>
+
+  <h2>ProtectedRoute simple (exemple de route protégée)</h2>
+  <pre><code><span class="comment">// src/components/ProtectedRoute.jsx</span>
+import { Navigate } from 'react-router-dom';
+
+export default function ProtectedRoute({ children, isAllowed }) {
+  if (!isAllowed) {
+    return &lt;Navigate to="/" replace /&gt;
+  }
+  return children;
+}
+</code></pre>
+
+  <h2>Utilisation d'une route protégée (extrait)</h2>
+  <pre><code>
+// &lt;Route path="/admin" element=&lt;ProtectedRoute isAllowed={isAdmin}&gt;&lt;Admin /&gt;&lt;/ProtectedRoute&gt; /&gt;
+</code></pre>
+
+  <div class="exo">
+    <h3>Exercice 4</h3>
+    <p>
+      1) Implémentez les pages <code>Home</code>, <code>Liste</code>, <code>Detail</code> comme ci-dessus.<br>
+      2) Ajoutez un booléen <code>isAdmin</code> dans <code>App.jsx</code> (state) ; protégez une route <code>/admin</code> avec <code>ProtectedRoute</code>.<br>
+      3) Testez <code>useNavigate</code> pour rediriger après une action (ex. bouton "Retour" ou "Aller à Admin").
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>02 — Structure & Premier composant — App Animaux</title>
+<style>
+  body{font-family:system-ui, sans-serif;background:#f5f5f5;padding:2rem;line-height:1.6;color:#222;}
+  .section{background:#fff;padding:1.4rem;border-radius:10px;margin-bottom:1.6rem;border:1px solid #ddd;}
+  pre{background:#2b2b2b;color:#f8f8f2;padding:1rem;border-radius:6px;overflow-x:auto;}
+  .comment{color:#00cc44;font-style:italic;}
+  .exo{background:#ecf7ff;padding:1rem;border-left:4px solid #0077cc;border-radius:6px;}
+</style>
+</head>
+<body>
+
+
+        <nav class="navbar">
+        <div class="nav-brand">Buddy.fr</div>
+
+        <ul class="nav-links">
+            <li><a href="./index.html">Accueil</a></li>
+            <li><a href="./02-structure-premier-composant.html">composant</a></li>
+            <li><a href="./03-props-liste-dynamique.html">props</a></li>
+            <li><a href="/04-routage-hooks-avance.html">routage</a></li>
+        </ul>
+    </nav>
+
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.4rem;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .nav-brand {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+<h1>02 — Structure de projet & Premier composant</h1>
+
+<div class="section">
+  <h2>Objectif (fil rouge)</h2>
+  <p>Poser la structure du projet pour l'application <strong>Animaux</strong> et coder le composant <code>AnimalCard</code> qui affichera les données d'un animal.</p>
+
+  <h2>Structure recommandée</h2>
+  <pre><code>src/
+├─ main.jsx          <span class="comment">// branche l'application dans index.html</span>
+├─ App.jsx           <span class="comment">// composant racine — contiendra la logique globale</span>
+├─ assets/
+├─ data/
+│  └─ animaux.json   <span class="comment">// source de données locale pour l'exercice</span>
+└─ components/
+   └─ AnimalCard.jsx <span class="comment">// composant réutilisable pour afficher un animal</span>
+</code></pre>
+
+  <h2>Exemple : fichier <code>src/data/animaux.json</code></h2>
+  <pre><code>[
+  { "id": 1, "nom": "Chat", "age": 3 },
+  { "id": 2, "nom": "Chien", "age": 5 },
+  { "id": 3, "nom": "Lapin", "age": 2 }
+]
+</code></pre>
+
+  <h2>Exemple : composant <code>AnimalCard.jsx</code></h2>
+  <pre><code><span class="comment">// src/components/AnimalCard.jsx</span>
+export default function AnimalCard({ nom, age }) {
+  return (
+    &lt;article className="animal-card"&gt;
+      &lt;h3&gt;{nom}&lt;/h3&gt;
+      &lt;p&gt;Âge : {age} ans&lt;/p&gt;
+    &lt;/article&gt;
+  );
+}
+</code></pre>
+
+  <h2>Exemple : point d'entrée <code>src/main.jsx</code></h2>
+  <pre><code><span class="comment">// src/main.jsx</span>
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+
+createRoot(document.getElementById('root')).render(&lt;React.StrictMode&gt;&lt;App /&gt;&lt;/React.StrictMode&gt;);
+</code></pre>
+
+  <h2>Exemple : <code>src/App.jsx</code> minimal pour afficher la carte</h2>
+  <pre><code><span class="comment">// src/App.jsx</span>
+import AnimalCard from './components/AnimalCard';
+
+export default function App() {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;App Animaux — Étape 1&lt;/h1&gt;
+      &lt;AnimalCard nom="Chat" age={3} /&gt;
+    &lt;/main&gt;
+  );
+}
+</code></pre>
+
+  <div class="exo">
+    <h3>Exercice 2</h3>
+    <p>Implémentez les fichiers ci-dessus. Vérifiez que le composant <code>AnimalCard</code> s'affiche dans le navigateur. Ajoutez un style CSS minimal pour rendre la carte lisible.</p>
+  </div>
+</div>
+
+</body>
+</html>

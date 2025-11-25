@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>03 — Props & Liste dynamique — App Animaux</title>
+<style>
+  body{font-family:system-ui, sans-serif;background:#f5f5f5;padding:2rem;line-height:1.6;color:#222;}
+  .section{background:#fff;padding:1.4rem;border-radius:10px;margin-bottom:1.6rem;border:1px solid #ddd;}
+  pre{background:#2b2b2b;color:#f8f8f2;padding:1rem;border-radius:6px;overflow-x:auto;}
+  .comment{color:#00cc44;font-style:italic;}
+  .exo{background:#ecf7ff;padding:1rem;border-left:4px solid #0077cc;border-radius:6px;}
+</style>
+</head>
+<body>
+
+        <nav class="navbar">
+        <div class="nav-brand">Buddy.fr</div>
+
+        <ul class="nav-links">
+            <li><a href="./index.html">Accueil</a></li>
+            <li><a href="./02-structure-premier-composant.html">composant</a></li>
+            <li><a href="./03-props-liste-dynamique.html">props</a></li>
+            <li><a href="/04-routage-hooks-avance.html">routage</a></li>
+        </ul>
+    </nav>
+
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.4rem;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .nav-brand {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+<h1>03 — Props & Liste dynamique</h1>
+
+<div class="section">
+  <h2>Objectif (fil rouge)</h2>
+  <p>Utiliser les props pour rendre <code>AnimalCard</code> dynamique et générer une liste à partir de <code>animaux.json</code>. Ajouter un filtre simple par nom.</p>
+
+  <h2>Rappel : qu'est-ce qu'une prop ?</h2>
+  <p>
+    Une <strong>prop</strong> (propriété) est une donnée passée d'un composant parent à un composant enfant.
+    Les props sont immuables côté enfant : l'enfant lit les props, il ne doit pas les modifier directement.
+  </p>
+
+  <h2>AnimalCard (avec détails et bouton)</h2>
+  <pre><code><span class="comment">// src/components/AnimalCard.jsx</span>
+export default function AnimalCard({ id, nom, age, onShowAge }) {
+  return (
+    &lt;article className="animal-card" data-id={id}&gt;
+      &lt;h3&gt;{nom}&lt;/h3&gt;
+      &lt;button onClick={() =&gt; onShowAge(id)}&gt;Afficher l'âge&lt;/button&gt;
+    &lt;/article&gt;
+  );
+}
+</code></pre>
+
+  <h2>App.jsx — charger la liste et mapper</h2>
+  <pre><code><span class="comment">// src/App.jsx</span>
+import { useState, useEffect } from 'react';
+import AnimalCard from './components/AnimalCard';
+
+export default function App() {
+  const [animaux, setAnimaux] = useState([]);
+  const [q, setQ] = useState('');
+
+  useEffect(() =&gt; {
+    fetch('/src/data/animaux.json')
+      .then(res =&gt; res.json())
+      .then(setAnimaux);
+  }, []);
+
+  const filtres = animaux.filter(a =&gt; a.nom.toLowerCase().includes(q.toLowerCase()));
+
+  function handleShowAge(id) {
+    const a = animaux.find(x =&gt; x.id === id);
+    if (a) alert(`${a.nom} a ${a.age} ans`);
+  }
+
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;App Animaux — Liste&lt;/h1&gt;
+      &lt;input placeholder="Rechercher..." value={q} onChange={e =&gt; setQ(e.target.value)} /&gt;
+      &lt;section&gt;
+        {filtres.map(a =&gt; &lt;AnimalCard key={a.id} {...a} onShowAge={handleShowAge} /&gt;)}
+      &lt;/section&gt;
+    &lt;/main&gt;
+  );
+}
+</code></pre>
+
+  <h2>Points pédagogiques</h2>
+  <ul>
+    <li>Passage de données via props (ex. <code>nom</code>, <code>age</code>).</li>
+    <li>Passage de fonctions en props pour remonter des événements (<code>onShowAge</code>).</li>
+    <li>Utilisation de <code>map()</code> pour rendre une liste d'éléments React.</li>
+  </ul>
+
+  <div class="exo">
+    <h3>Exercice 3</h3>
+    <p>
+      - Implémentez la recherche dynamique (input) et la liste à partir de <code>animaux.json</code>.<br>
+      - Ajoutez un bouton "Trier A→Z / Z→A" qui inverse l'ordre d'affichage.<br>
+      - Bonus : ajoutez un champ <code>ageMax</code> pour filtrer par âge maximum.
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

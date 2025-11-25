@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>01 — Introduction & Configuration — React + Vite (Fil rouge : App Animaux)</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: #f5f5f5;
+            padding: 2rem;
+            line-height: 1.6;
+            color: #222;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin-top: 1.6rem;
+        }
+
+        .section {
+            background: #fff;
+            padding: 1.4rem;
+            border-radius: 10px;
+            margin-bottom: 1.6rem;
+            border: 1px solid #ddd;
+        }
+
+        pre {
+            background: #2b2b2b;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        code {
+            color: #938ac9;
+        }
+
+        .comment {
+            color: #00cc44;
+            font-style: italic;
+        }
+
+        .exo {
+            background: #ecf7ff;
+            padding: 1rem;
+            border-left: 4px solid #0077cc;
+            border-radius: 6px;
+        }
+
+        ul {
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-brand">Buddy.fr</div>
+
+        <ul class="nav-links">
+            <li><a href="./index.html">Accueil</a></li>
+            <li><a href="./02-structure-premier-composant.html">composant</a></li>
+            <li><a href="./03-props-liste-dynamique.html">props</a></li>
+            <li><a href="/04-routage-hooks-avance.html">routage</a></li>
+        </ul>
+    </nav>
+
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.4rem;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .nav-brand {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <h1>01 — Introduction & Configuration</h1>
+
+    <div class="section">
+        <h2>Objectif de cette étape (fil rouge)</h2>
+        <p>Préparer l'environnement et comprendre les choix technologiques pour construire l'application
+            <strong>Animaux</strong> (liste d'animaux, filtrage, navigation simple).</p>
+
+        <h2>Qu'est-ce que React ? (théorie synthétique)</h2>
+        <p>
+            React est une bibliothèque JavaScript pour construire des interfaces utilisateurs déclaratives et
+            performantes.
+            Les points essentiels :
+        </p>
+        <ul>
+            <li>Approche par composants réutilisables.</li>
+            <li>Gestion locale de l'état (state) et propagation via props.</li>
+            <li>Virtual DOM : minimisation des opérations coûteuses sur le DOM réel.</li>
+            <li>Écosystème riche (router, state management, testing).</li>
+        </ul>
+
+        <h2>Qu'est-ce que Vite ? (théorie synthétique)</h2>
+        <p>
+            Vite est un build tool moderne optimisé pour le développement front-end :
+        </p>
+        <ul>
+            <li>Serveur de développement ultra-rapide (HMR — Hot Module Replacement).</li>
+            <li>Build de production optimisé (esbuild + rollup).</li>
+            <li>Configuration minimale pour démarrer rapidement.</li>
+        </ul>
+
+        <h2>Pourquoi React + Vite pour le projet ?</h2>
+        <ul>
+            <li>Temps de feedback réduit en dev (Vite HMR) → productivité.</li>
+            <li>Component-driven development → facilité d'évolution du fil rouge.</li>
+            <li>Interopérabilité avec bibliothèques usuelles (react-router, fetch, etc.).</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Installation — créer le projet (commande)</h2>
+        <pre><code><span class="comment">// crée un projet Vite + React (sélectionner "react" puis "javascript" ou "typescript")</span>
+npm create vite@latest animaux-app
+
+<span class="comment">// se déplacer dans le dossier, installer les dépendances et démarrer le serveur</span>
+cd animaux-app
+npm install
+npm run dev <span class="comment">// serveur de dev (par défaut http://localhost:5173)</span>
+</code></pre>
+
+        <h2>Structure minimale (après create)</h2>
+        <pre><code>animaux-app/
+├─ index.html
+├─ package.json
+├─ vite.config.js
+└─ src/
+   ├─ main.jsx        <span class="comment">// point d'entrée React</span>
+   ├─ App.jsx         <span class="comment">// composant racine</span>
+   └─ assets/
+</code></pre>
+
+        <h2>Checklist de validation</h2>
+        <ul>
+            <li>Le serveur `npm run dev` répond sur <code>http://localhost:5173</code>.</li>
+            <li>La page d'accueil fournie par Vite s'affiche.</li>
+        </ul>
+
+        <div class="exo">
+            <h3>Exercice 1</h3>
+            <p>Créez le projet Vite + React, démarrez le serveur et copiez la structure de fichiers ci-dessous dans un
+                fichier texte. Capturez la page d'accueil (screenshot) et notez l'URL locale.</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
